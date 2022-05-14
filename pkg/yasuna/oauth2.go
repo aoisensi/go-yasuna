@@ -29,7 +29,7 @@ func (o *OAuth2) AuthCodeURL() string {
 		"response_type":         {"code"},
 		"client_id":             {o.ClientID},
 		"redirect_uri":          {o.RedirectURI},
-		"scope":                 {"tweet.read tweet.write users.read offline.access"},
+		"scope":                 {"tweet.read tweet.write users.read follows.read offline.access"},
 		"state":                 {o.state},
 		"code_challenge_method": {"S256"},
 		"code_challenge":        {o.makePKCE()},

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -31,6 +32,7 @@ func (t *Twitter) do(method, path string, uv url.Values, vo any) error {
 	if uv != nil {
 		u += "?" + uv.Encode()
 	}
+	fmt.Println(u)
 	req, _ := http.NewRequest(method, u, nil)
 	req.Header.Set("Authorization", "Bearer "+t.Token.AccessToken)
 	resp, err := t.cli.Do(req)
