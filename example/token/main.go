@@ -17,7 +17,7 @@ func main() {
 		ClientSecret: os.Getenv("TWITTER_CLIENT_SECRET"),
 		RedirectURI:  os.Getenv("TWITTER_REDIRECT_URL"),
 	}
-	url := oauth2.AuthCodeURL()
+	url := oauth2.AuthCodeURL(yasuna.ScopeAll)
 	fmt.Println("Please open the URL above in your browser and enter the code:")
 	fmt.Println(url)
 	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
@@ -27,8 +27,9 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("AccessToken: ", twitter.Token.AccessToken)
-		fmt.Println("RefreshToken: ", twitter.Token.RefreshToken)
+		fmt.Println("AccessToken:", twitter.Token.AccessToken)
+		fmt.Println("RefreshToken:", twitter.Token.RefreshToken)
+		fmt.Println("Expires at about:", twitter.Token.Expire)
 		w.Write([]byte("You can close this window now.\nBack to the terminal."))
 		cancel()
 	})

@@ -22,14 +22,14 @@ type OAuth2 struct {
 	state        string
 }
 
-func (o *OAuth2) AuthCodeURL() string {
+func (o *OAuth2) AuthCodeURL(scope ...Scope) string {
 	o.makeState()
 	u := "https://twitter.com/i/oauth2/authorize?"
 	u += url.Values{
 		"response_type":         {"code"},
 		"client_id":             {o.ClientID},
 		"redirect_uri":          {o.RedirectURI},
-		"scope":                 {"tweet.read tweet.write users.read follows.read offline.access"},
+		"scope":                 {string(fmtScope(scope...))},
 		"state":                 {o.state},
 		"code_challenge_method": {"S256"},
 		"code_challenge":        {o.makePKCE()},
@@ -114,7 +114,7 @@ type Token struct {
 	Expire       time.Time
 	AccessToken  string
 	RefreshToken string
-	Scope        []string
+	Scope        Scope
 }
 
 func parseToken(data []byte, token *Token) {
@@ -132,6 +132,6 @@ func parseToken(data []byte, token *Token) {
 		token.RefreshToken = v.RefreshToken
 	}
 	if v.Scope != "" {
-		token.Scope = strings.Split(v.Scope, " ")
+		token.Scope = Scope(v.Scope)
 	}
 }

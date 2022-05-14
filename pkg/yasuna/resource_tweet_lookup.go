@@ -25,7 +25,7 @@ func (t *Twitter) GetTweet(id int64) (*Response[*Tweet], error) {
 func (t *Twitter) GetTweets(ids []int64) (*Response[[]*Tweet], error) {
 	path := "tweets"
 	uv := url.Values{
-		"id":           {convIds(ids)},
+		"id":           {fmtIds(ids)},
 		"expansions":   {"author_id"},
 		"tweet.fields": {"id,text,author_id,created_at"},
 		"user.fields":  {"username,verified"},
