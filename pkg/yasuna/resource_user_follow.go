@@ -12,7 +12,7 @@ func (t *Twitter) GetUserFollowing(id int64, opts ...WithMaxResults) (*Response[
 	return t.getUserFollows("following", id, opts...)
 }
 
-// GetUserFollowers a list of users who are followers of the specified user ID.
+// GetUserFollowers returns a list of users who are followers of the specified user ID.
 //
 // https://developer.twitter.com/en/docs/twitter-api/users/follows/api-reference/get-users-id-followers
 func (t *Twitter) GetUserFollowers(id int64, opts ...WithMaxResults) (*Response[[]*User], error) {
