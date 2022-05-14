@@ -11,7 +11,34 @@ func (t *Twitter) PostTweet(params *PostTweetParams) (*Response[*Tweet], error) 
 }
 
 type PostTweetParams struct {
-	Text string `json:"text,omitempty"`
+	DirectMessageDeepLink string                `json:"direct_message_deeplink,omitempty"`
+	ForSuperFollowersOnly bool                  `json:"for_super_followers_only,omitempty"`
+	Geo                   *PostTweetGeoParams   `json:"geo,omitempty"`
+	Media                 *PostTweetMediaParams `json:"media,omitempty"`
+	Poll                  *PostTweetPollParams  `json:"poll,omitempty"`
+	QuoteTweetID          int64                 `json:"quote_tweet_id,string,omitempty"`
+	Reply                 *PostTweetReplyParams `json:"reply,omitempty"`
+	ReplySettings         string                `json:"reply_settings,omitempty"`
+	Text                  string                `json:"text,omitempty"`
+}
+
+type PostTweetGeoParams struct {
+	PlaceID string `json:"place_id,omitempty"`
+}
+
+type PostTweetMediaParams struct {
+	MediaIDs      []string `json:"media_ids,omitempty"`
+	TaggedUserIDs []int64  `json:"tagged_user_ids,string,omitempty"`
+}
+
+type PostTweetPollParams struct {
+	DurationMinutes int      `json:"duration_minutes,omitempty"`
+	Options         []string `json:"options,omitempty"`
+}
+
+type PostTweetReplyParams struct {
+	ExcludeReplyUserIDs []int64 `json:"exclude_reply_user_ids,string,omitempty"`
+	InReplyToTweetID    int64   `json:"in_reply_to_tweet_id,string"`
 }
 
 // DeleteTweet allows a user or authenticated user ID to delete a Tweet.
