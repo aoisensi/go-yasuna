@@ -111,7 +111,7 @@ func (o *OAuth2) makeState() {
 }
 
 type Token struct {
-	Expire       time.Time
+	Expire       *time.Time
 	AccessToken  string
 	RefreshToken string
 	Scope        Scope
@@ -125,9 +125,16 @@ func parseToken(data []byte, token *Token) {
 		Scope        string `json:"scope"`
 		RefreshToken string `json:"refresh_token"`
 	}{}
-	json.Unmarshal(data, &v)
-	token.Expire = time.Now().Add(time.Duration(v.ExpiresIn) * time.Second)
+	if err := json.Unmarshal(data, &v); err != nil {
+		panic(err)
+	}
 	token.AccessToken = v.AccessToken
+	if v.ExpiresIn > 0 {
+		expire := time.Now().Add(time.Duration(v.ExpiresIn) * time.Second)
+		token.Expire = &expire
+	} else {
+		token.Expire = nil
+	}
 	if v.RefreshToken != "" {
 		token.RefreshToken = v.RefreshToken
 	}

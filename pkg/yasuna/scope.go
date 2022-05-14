@@ -1,6 +1,8 @@
 package yasuna
 
-import "strings"
+import (
+	"strings"
+)
 
 // Scope
 //
@@ -73,4 +75,11 @@ func (s Scope) Split() []Scope {
 		scope[i] = Scope(s)
 	}
 	return scope
+}
+
+func (s Scope) Remove(x Scope) Scope {
+	for _, x := range x.Split() {
+		s = Scope(strings.Replace(string(s), string(x), "", -1))
+	}
+	return Scope(strings.TrimSpace(string(s)))
 }
