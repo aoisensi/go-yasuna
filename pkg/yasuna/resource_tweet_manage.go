@@ -38,7 +38,7 @@ type PostTweetPollParams struct {
 
 type PostTweetReplyParams struct {
 	ExcludeReplyUserIDs []int64 `json:"exclude_reply_user_ids,string,omitempty"`
-	InReplyToTweetID    int64   `json:"in_reply_to_tweet_id,string"`
+	InReplyToTweetID    int64   `json:"in_reply_to_tweet_id,string,omitempty"`
 }
 
 // DeleteTweet allows a user or authenticated user ID to delete a Tweet.

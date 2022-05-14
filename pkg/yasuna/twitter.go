@@ -3,8 +3,6 @@ package yasuna
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -27,34 +25,8 @@ func NewTwitter(client *http.Client, token *Token) *Twitter {
 	}
 }
 
-func (t *Twitter) do(method, path string, uv url.Values, vo any) error {
-	u := t.endpoint + path
-	if uv != nil {
-		u += "?" + uv.Encode()
-	}
-	fmt.Println(u)
-	req, _ := http.NewRequest(method, u, nil)
-	req.Header.Set("Authorization", "Bearer "+t.Token.AccessToken)
-	resp, err := t.cli.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-	data, _ := io.ReadAll(resp.Body)
-	//fmt.Println(string(data))
-	code := resp.StatusCode
-	if 200 > code || code >= 300 {
-		return errors.New(string(data))
-	}
-	return json.Unmarshal(data, vo)
-}
-
 func (t *Twitter) get(path string, uv url.Values, vo any) error {
 	return t.do("GET", path, uv, vo)
-}
-
-func (t *Twitter) delete(path string, uv url.Values, vo any) error {
-	return t.do("DELETE", path, uv, vo)
 }
 
 func (t *Twitter) post(path string, vi, vo any) error {
@@ -83,11 +55,38 @@ func (t *Twitter) post(path string, vi, vo any) error {
 		return err
 	}
 	defer resp.Body.Close()
+	return t.done(resp, vo)
+}
+
+func (t *Twitter) delete(path string, uv url.Values, vo any) error {
+	return t.do("DELETE", path, uv, vo)
+}
+
+func (t *Twitter) do(method, path string, uv url.Values, vo any) error {
+	u := t.endpoint + path
+	if uv != nil {
+		u += "?" + uv.Encode()
+	}
+	req, _ := http.NewRequest(method, u, nil)
+	req.Header.Set("Authorization", "Bearer "+t.Token.AccessToken)
+	resp, err := t.cli.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	return t.done(resp, vo)
+}
+
+func (t *Twitter) done(resp *http.Response, vo any) error {
+	code := resp.StatusCode
 	data, _ := io.ReadAll(resp.Body)
 	//fmt.Println(string(data))
-	code := resp.StatusCode
 	if 200 > code || code >= 300 {
-		return errors.New(string(data))
+		err := new(ResponseError)
+		if err := json.Unmarshal(data, err); err != nil {
+			return err
+		}
+		return err
 	}
 	return json.Unmarshal(data, vo)
 }
