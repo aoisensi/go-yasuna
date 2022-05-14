@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"net/url"
 )
 
 type Twitter struct {
@@ -25,12 +26,45 @@ func NewTwitter(client *http.Client, token *Token) *Twitter {
 	}
 }
 
-func (t *Twitter) post(path string, vi, vo any) (*http.Response, error) {
+func (t *Twitter) do(method, path string, uv url.Values, vo any) error {
+	u := t.endpoint + path
+	if uv != nil {
+		u += "?" + uv.Encode()
+	}
+	req, _ := http.NewRequest(method, u, nil)
+	req.Header.Set("Authorization", "Bearer "+t.Token.AccessToken)
+	resp, err := t.cli.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	data, _ := io.ReadAll(resp.Body)
+	//fmt.Println(string(data))
+	code := resp.StatusCode
+	if 200 > code || code >= 300 {
+		return errors.New(string(data))
+	}
+	return json.Unmarshal(data, vo)
+}
+
+func (t *Twitter) get(path string, uv url.Values, vo any) error {
+	return t.do("GET", path, uv, vo)
+}
+
+func (t *Twitter) delete(path string, uv url.Values, vo any) error {
+	return t.do("DELETE", path, uv, vo)
+}
+
+func (t *Twitter) post(path string, vi, vo any) error {
 	var buf *bytes.Buffer
 	contentType := ""
-	if data, ok := vi.([]byte); ok {
-		buf = bytes.NewBuffer(data)
-	} else {
+	switch v := vi.(type) {
+	case []byte:
+		buf = bytes.NewBuffer(v)
+	case url.Values:
+		buf = bytes.NewBufferString(v.Encode())
+		contentType = "application/x-www-form-urlencoded"
+	default:
 		data, err := json.Marshal(vi)
 		if err != nil {
 			panic(err)
@@ -44,13 +78,14 @@ func (t *Twitter) post(path string, vi, vo any) (*http.Response, error) {
 
 	resp, err := t.cli.Do(req)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer resp.Body.Close()
 	data, _ := io.ReadAll(resp.Body)
+	//fmt.Println(string(data))
 	code := resp.StatusCode
 	if 200 > code || code >= 300 {
-		return resp, errors.New(string(data))
+		return errors.New(string(data))
 	}
-	return resp, json.Unmarshal(data, vo)
+	return json.Unmarshal(data, vo)
 }

@@ -12,8 +12,14 @@ func main() {
 		AccessToken: os.Getenv("TWITTER_ACCESS_TOKEN"),
 	}
 	twitter := yasuna.NewTwitter(nil, token)
-	_, _, err := twitter.PostTweet(&yasuna.PostTweetParams{Text: "Hello, world!"})
+	deleted, err := twitter.DeleteTweet(1525477480705888256)
 	if err != nil {
 		fmt.Println(err)
+		return
+	}
+	if deleted.Data.Deleted {
+		fmt.Println("Tweet deleted.")
+	} else {
+		fmt.Println("Tweet not deleted.")
 	}
 }
