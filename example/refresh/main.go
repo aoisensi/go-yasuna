@@ -13,8 +13,8 @@ func main() {
 		ClientSecret: os.Getenv("TWITTER_CLIENT_SECRET"),
 	}
 	token := &yasuna.Token{
-		AccessToken:  os.Getenv("TWITTER_ACCESS_TOKEN"),
 		RefreshToken: os.Getenv("TWITTER_REFRESH_TOKEN"),
+		Scope:        yasuna.ScopeAll,
 	}
 	if err := oauth2.Refresh(token); err != nil {
 		fmt.Println(err)

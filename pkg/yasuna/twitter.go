@@ -52,8 +52,8 @@ func (t *Twitter) post(path string, vi, vo any) error {
 	req.Header.Set("Authorization", "Bearer "+t.Token.AccessToken)
 	req.Header.Set("Content-Type", contentType)
 
-	if t.Token.Expired() {
-		t.OAuth2.Refresh(t.Token)
+	if err := t.refresh(); err != nil {
+		return err
 	}
 
 	resp, err := t.cli.Do(req)
@@ -76,8 +76,8 @@ func (t *Twitter) do(method, path string, uv url.Values, vo any) error {
 	req, _ := http.NewRequest(method, u, nil)
 	req.Header.Set("Authorization", "Bearer "+t.Token.AccessToken)
 
-	if t.Token.Expired() {
-		t.OAuth2.Refresh(t.Token)
+	if err := t.refresh(); err != nil {
+		return err
 	}
 
 	resp, err := t.cli.Do(req)
@@ -100,4 +100,17 @@ func (t *Twitter) done(resp *http.Response, vo any) error {
 		return err
 	}
 	return json.Unmarshal(data, vo)
+}
+
+func (t *Twitter) refresh() error {
+	if t.OAuth2 == nil {
+		return nil
+	}
+	if t.Token.RefreshToken == "" {
+		return nil
+	}
+	if t.Token.Expired() {
+		return t.OAuth2.Refresh(t.Token)
+	}
+	return nil
 }
