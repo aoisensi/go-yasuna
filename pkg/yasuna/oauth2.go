@@ -66,7 +66,7 @@ func (o *OAuth2) Exchange(code, state string) (*Twitter, error) {
 	}
 	token := new(Token)
 	parseToken(data, token)
-	return NewTwitter(client, token), nil
+	return NewTwitter(client, o, token), nil
 }
 
 func (o *OAuth2) Refresh(token *Token) error {
@@ -111,10 +111,14 @@ func (o *OAuth2) makeState() {
 }
 
 type Token struct {
-	Expire       *time.Time
+	Expire       time.Time
 	AccessToken  string
 	RefreshToken string
 	Scope        Scope
+}
+
+func (t *Token) Expired() bool {
+	return t.Expire.Before(time.Now())
 }
 
 func parseToken(data []byte, token *Token) {
@@ -130,10 +134,9 @@ func parseToken(data []byte, token *Token) {
 	}
 	token.AccessToken = v.AccessToken
 	if v.ExpiresIn > 0 {
-		expire := time.Now().Add(time.Duration(v.ExpiresIn) * time.Second)
-		token.Expire = &expire
+		token.Expire = time.Now().Add(time.Duration(v.ExpiresIn) * time.Second)
 	} else {
-		token.Expire = nil
+		token.Expire = time.Time{}
 	}
 	if v.RefreshToken != "" {
 		token.RefreshToken = v.RefreshToken

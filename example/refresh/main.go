@@ -11,16 +11,15 @@ func main() {
 	oauth2 := &yasuna.OAuth2{
 		ClientID:     os.Getenv("TWITTER_CLIENT_ID"),
 		ClientSecret: os.Getenv("TWITTER_CLIENT_SECRET"),
-		RedirectURI:  os.Getenv("TWITTER_REDIRECT_URL"),
 	}
 	token := &yasuna.Token{
-		AccessToken: os.Getenv("TWITTER_ACCESS_TOKEN"),
+		AccessToken:  os.Getenv("TWITTER_ACCESS_TOKEN"),
+		RefreshToken: os.Getenv("TWITTER_REFRESH_TOKEN"),
 	}
-	twitter := yasuna.NewTwitter(nil, oauth2, token)
-	tweet, err := twitter.GetTweet(20)
-	if err != nil {
+	if err := oauth2.Refresh(token); err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(tweet.Data.Text)
+	fmt.Println("AccessToken:", token.AccessToken)
+	fmt.Println("RefreshToken:", token.RefreshToken)
 }

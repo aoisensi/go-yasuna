@@ -12,12 +12,12 @@ import (
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
-	oauth2 := yasuna.OAuth2{
+	oauth2 := &yasuna.OAuth2{
 		ClientID:     os.Getenv("TWITTER_CLIENT_ID"),
 		ClientSecret: os.Getenv("TWITTER_CLIENT_SECRET"),
 		RedirectURI:  os.Getenv("TWITTER_REDIRECT_URL"),
 	}
-	url := oauth2.AuthCodeURL(yasuna.ScopeAll.Remove(yasuna.ScopeOfflineAccess))
+	url := oauth2.AuthCodeURL(yasuna.ScopeAll)
 	fmt.Println("Please open the URL above in your browser and enter the code:")
 	fmt.Println(url)
 	http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
@@ -29,8 +29,8 @@ func main() {
 		}
 		fmt.Println("AccessToken:", twitter.Token.AccessToken)
 		fmt.Println("RefreshToken:", twitter.Token.RefreshToken)
-		if twitter.Token.Expire != nil {
-			fmt.Println("Expires at about:", *twitter.Token.Expire)
+		if !twitter.Token.Expire.IsZero() {
+			fmt.Println("Expires at about:", twitter.Token.Expire)
 		} else {
 			fmt.Println("The token does not expire.")
 		}

@@ -9,10 +9,15 @@ import (
 )
 
 func main() {
+	oauth2 := &yasuna.OAuth2{
+		ClientID:     os.Getenv("TWITTER_CLIENT_ID"),
+		ClientSecret: os.Getenv("TWITTER_CLIENT_SECRET"),
+		RedirectURI:  os.Getenv("TWITTER_REDIRECT_URL"),
+	}
 	token := &yasuna.Token{
 		AccessToken: os.Getenv("TWITTER_ACCESS_TOKEN"),
 	}
-	twitter := yasuna.NewTwitter(nil, token)
+	twitter := yasuna.NewTwitter(nil, oauth2, token)
 	id, _ := strconv.ParseInt(os.Getenv("TWITTER_USER_ID"), 10, 64)
 	tweets, err := twitter.GetUserTweets(id,
 		yasuna.WithMaxResults(100),

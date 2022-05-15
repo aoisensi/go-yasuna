@@ -12,9 +12,10 @@ type Twitter struct {
 	endpoint string
 	cli      *http.Client
 	Token    *Token
+	OAuth2   *OAuth2
 }
 
-func NewTwitter(client *http.Client, token *Token) *Twitter {
+func NewTwitter(client *http.Client, oauth2 *OAuth2, token *Token) *Twitter {
 	if client == nil {
 		client = http.DefaultClient
 	}
@@ -22,6 +23,7 @@ func NewTwitter(client *http.Client, token *Token) *Twitter {
 		endpoint: "https://api.twitter.com/2/",
 		cli:      client,
 		Token:    token,
+		OAuth2:   oauth2,
 	}
 }
 
@@ -50,6 +52,10 @@ func (t *Twitter) post(path string, vi, vo any) error {
 	req.Header.Set("Authorization", "Bearer "+t.Token.AccessToken)
 	req.Header.Set("Content-Type", contentType)
 
+	if t.Token.Expired() {
+		t.OAuth2.Refresh(t.Token)
+	}
+
 	resp, err := t.cli.Do(req)
 	if err != nil {
 		return err
@@ -69,6 +75,11 @@ func (t *Twitter) do(method, path string, uv url.Values, vo any) error {
 	}
 	req, _ := http.NewRequest(method, u, nil)
 	req.Header.Set("Authorization", "Bearer "+t.Token.AccessToken)
+
+	if t.Token.Expired() {
+		t.OAuth2.Refresh(t.Token)
+	}
+
 	resp, err := t.cli.Do(req)
 	if err != nil {
 		return err
