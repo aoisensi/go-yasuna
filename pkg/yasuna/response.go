@@ -8,6 +8,8 @@ type Response[T any] struct {
 	Meta *struct {
 		ResultCount int    `json:"result_count"`
 		NextToken   string `json:"next_token"`
+		NewestID    int64  `json:"newest_id,string"`
+		OldestID    int64  `json:"oldest_id,string"`
 	} `json:"meta,omitempty"`
 }
 

@@ -32,7 +32,11 @@ func (w WithExpansions) optGetTweet(v url.Values) {
 	w.opt(v)
 }
 
-func (w WithExpansions) optGetUserTweets(v url.Values) {
+func (w WithExpansions) optGetUserTweet(v url.Values) {
+	w.opt(v)
+}
+
+func (w WithExpansions) optGetTweetSearch(v url.Values) {
 	w.opt(v)
 }
 

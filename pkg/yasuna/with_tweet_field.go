@@ -56,7 +56,7 @@ func (w WithTweetFields) optGetTweet(v url.Values) {
 	w.opt(v)
 }
 
-func (w WithTweetFields) optGetUserTweets(v url.Values) {
+func (w WithTweetFields) optGetUserTweet(v url.Values) {
 	w.opt(v)
 }
 
