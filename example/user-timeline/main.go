@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/aoisensi/go-yasuna/pkg/yasuna"
+	"github.com/aoisensi/go-yasuna/yasuna"
 )
 
 func main() {
