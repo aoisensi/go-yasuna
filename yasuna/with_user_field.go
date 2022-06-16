@@ -46,7 +46,7 @@ func (w WithUserFields) optGetUserTweet(v url.Values) {
 	w.opt(v)
 }
 
-func (w WithUserFields) optGetTweetSearch(v url.Values) {
+func (w WithUserFields) optGetTweetsSearch(v url.Values) {
 	w.opt(v)
 }
 

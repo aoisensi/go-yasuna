@@ -7,8 +7,8 @@ import "net/url"
 // The Tweets returned by this endpoint count towards the Project-level Tweet cap.
 //
 // https://developer.twitter.com/en/docs/twitter-api/tweets/search/api-reference/get-tweets-search-recent
-func (t *Twitter) GetTweetSearchRecent(query string, opts ...GetTweetSearchOption) (*Response[[]*Tweet], error) {
-	return t.getTweetSearch("recent", query, opts...)
+func (t *Twitter) GetTweetsSearchRecent(query string, opts ...GetTweetsSearchOption) (*Response[[]*Tweet], error) {
+	return t.getTweetsSearch("recent", query, opts...)
 }
 
 // This endpoint is only available to those users who have been approved for Academic Research access.
@@ -18,21 +18,21 @@ func (t *Twitter) GetTweetSearchRecent(query string, opts ...GetTweetSearchOptio
 // The Tweets returned by this endpoint count towards the Project-level Tweet cap.
 //
 // https://developer.twitter.com/en/docs/twitter-api/tweets/search/api-reference/get-tweets-search-all
-func (t *Twitter) GetTweetSearchAll(query string, opts ...GetTweetSearchOption) (*Response[[]*Tweet], error) {
-	return t.getTweetSearch("all", query, opts...)
+func (t *Twitter) GetTweetsSearchAll(query string, opts ...GetTweetsSearchOption) (*Response[[]*Tweet], error) {
+	return t.getTweetsSearch("all", query, opts...)
 }
 
-func (t *Twitter) getTweetSearch(f string, query string, opts ...GetTweetSearchOption) (*Response[[]*Tweet], error) {
+func (t *Twitter) getTweetsSearch(f string, query string, opts ...GetTweetsSearchOption) (*Response[[]*Tweet], error) {
 	path := "tweets/search/" + f
 	data := new(Response[[]*Tweet])
 	vi := url.Values{}
 	vi.Set("query", query)
 	for _, opt := range opts {
-		opt.optGetTweetSearch(vi)
+		opt.optGetTweetsSearch(vi)
 	}
 	return data, t.get(path, vi, data)
 }
 
-type GetTweetSearchOption interface {
-	optGetTweetSearch(v url.Values)
+type GetTweetsSearchOption interface {
+	optGetTweetsSearch(v url.Values)
 }

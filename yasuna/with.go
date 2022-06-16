@@ -12,7 +12,11 @@ func (w WithEndTime) optGetUserTweet(v url.Values) {
 	v.Set("end_time", time.Time(w).Format(time.RFC3339))
 }
 
-func (w WithEndTime) optGetTweetSearch(v url.Values) {
+func (w WithEndTime) optGetTweetsSearch(v url.Values) {
+	v.Set("end_time", time.Time(w).Format(time.RFC3339))
+}
+
+func (w WithEndTime) optGetTweetsCounts(v url.Values) {
 	v.Set("end_time", time.Time(w).Format(time.RFC3339))
 }
 
@@ -26,7 +30,7 @@ func (w WithMaxResults) optGetUserTweet(v url.Values) {
 	v.Set("max_results", strconv.Itoa(int(w)))
 }
 
-func (w WithMaxResults) optGetTweetSearch(v url.Values) {
+func (w WithMaxResults) optGetTweetsSearch(v url.Values) {
 	v.Set("max_results", strconv.Itoa(int(w)))
 }
 
@@ -36,7 +40,11 @@ func (w WithMaxResults) optGetUserFollow(v url.Values) {
 
 type WithNextToken string
 
-func (w WithNextToken) optGetTweetSearch(v url.Values) {
+func (w WithNextToken) optGetTweetsSearch(v url.Values) {
+	v.Set("next_token", string(w))
+}
+
+func (w WithNextToken) optGetTweetsCounts(v url.Values) {
 	v.Set("next_token", string(w))
 }
 
@@ -52,7 +60,11 @@ func (w WithSinceID) optGetUserTweet(v url.Values) {
 	v.Set("since_id", strconv.FormatInt(int64(w), 10))
 }
 
-func (w WithSinceID) optGetTweetSearch(v url.Values) {
+func (w WithSinceID) optGetTweetsSearch(v url.Values) {
+	v.Set("since_id", strconv.FormatInt(int64(w), 10))
+}
+
+func (w WithSinceID) optGetTweetsCounts(v url.Values) {
 	v.Set("since_id", strconv.FormatInt(int64(w), 10))
 }
 
@@ -62,7 +74,11 @@ func (w WithStartTime) optGetUserTweet(v url.Values) {
 	v.Set("start_time", time.Time(w).Format(time.RFC3339))
 }
 
-func (w WithStartTime) optGetTweetSearch(v url.Values) {
+func (w WithStartTime) optGetTweetsSearch(v url.Values) {
+	v.Set("start_time", time.Time(w).Format(time.RFC3339))
+}
+
+func (w WithStartTime) optGetTweetsCounts(v url.Values) {
 	v.Set("start_time", time.Time(w).Format(time.RFC3339))
 }
 
@@ -72,6 +88,10 @@ func (w WithUntilID) optGetUserTweet(v url.Values) {
 	v.Set("until_id", strconv.FormatInt(int64(w), 10))
 }
 
-func (w WithUntilID) optGetTweetSearch(v url.Values) {
+func (w WithUntilID) optGetTweetsSearch(v url.Values) {
+	v.Set("until_id", strconv.FormatInt(int64(w), 10))
+}
+
+func (w WithUntilID) optGetTweetsCounts(v url.Values) {
 	v.Set("until_id", strconv.FormatInt(int64(w), 10))
 }

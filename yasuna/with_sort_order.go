@@ -11,6 +11,6 @@ const (
 
 type WithSortOrder SortOrder
 
-func (w WithSortOrder) optGetTweetSearch(v url.Values) {
+func (w WithSortOrder) optGetTweetsSearch(v url.Values) {
 	v.Set("sort_order", string(w))
 }
